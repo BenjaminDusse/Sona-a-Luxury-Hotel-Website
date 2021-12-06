@@ -49,17 +49,18 @@ class Room(models.Model):
     bed_type = models.CharField(max_length=200, choices=bed_choices)
     services = models.ManyToManyField(Services, related_name='room')
     content = RichTextField()
-    rating_stars = models.ForeignKey(Rating_Star, on_delete=models.SET_NULL, null=True)
+    rating_stars = models.ForeignKey(Rating_Star, on_delete=models.SET_NULL, null=True, blank=True)
     size_in_ft = models.PositiveIntegerField(default=15)
     capacity_persons = models.PositiveIntegerField(default=2)
+
 
     def __str__(self):
         return f"{self.name} room"
 
 
 class Comment(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='room')
     content = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
     rating_stars = models.ForeignKey(Rating_Star, on_delete=models.SET_NULL, null=True)
@@ -75,11 +76,5 @@ class Gallery(models.Model):
 
     def __str__(self):
         return self.title
-        
+    
 # rating star yaratish 5 xilini va iconlarini css dan topish yoki svg xullas
-
-
-# into users app
-
-
-

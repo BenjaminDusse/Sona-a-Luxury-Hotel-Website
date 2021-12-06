@@ -1,6 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import User
+from ckeditor.fields import RichTextField
+from django.utils import timezone
 
-# Create your models here.
 
 class Tag(models.Model):
     name = models.CharField(max_length=255)
@@ -22,9 +24,15 @@ class Post(models.Model):
         return self.title
 
 
+class Rating_Star(models.Model):
+    star = models.PositiveIntegerField()
+    star_icon = models.ImageField(upload_to='rooms/rating_stars')
+
+
+
 class Comment(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comment')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post')
     content = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
     rating_stars = models.ForeignKey(Rating_Star, on_delete=models.SET_NULL, null=True)
