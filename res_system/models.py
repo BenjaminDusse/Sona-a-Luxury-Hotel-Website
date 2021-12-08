@@ -1,9 +1,12 @@
 from django.db import models
 from ckeditor.fields import RichTextField
 from django.contrib.auth.models import User
+from django.utils import timezone
+from django.urls import reverse
 
 
-class Services(models.Model):
+
+class Service(models.Model):
     name = models.CharField(max_length=200)
     icon = models.ImageField(upload_to='service_icons', blank=True, null=True)
 
@@ -23,8 +26,10 @@ class Category(models.Model):
 
 class Rating_Star(models.Model):
     star = models.PositiveIntegerField()
-    star_icon = models.ImageField(upload_to='rooms/rating_stars')
+    star_icon = models.ImageField(upload_to='rooms/rating_stars', blank=True, null=True)
 
+    def __str__(self):
+        return str(self.star)
 
 
 class Room(models.Model):
@@ -47,15 +52,32 @@ class Room(models.Model):
     image = models.ImageField(upload_to='rooms_pics')
     room_type = models.CharField(max_length=200, choices=type_choices)
     bed_type = models.CharField(max_length=200, choices=bed_choices)
-    services = models.ManyToManyField(Services, related_name='room')
+    services = models.ManyToManyField(Service, related_name='room')
     content = RichTextField()
     rating_stars = models.ForeignKey(Rating_Star, on_delete=models.SET_NULL, null=True, blank=True)
-    size_in_ft = models.PositiveIntegerField(default=15)
+    size = models.PositiveIntegerField(default=15)
     capacity_persons = models.PositiveIntegerField(default=2)
-
+    date_created = models.DateTimeField(default=timezone.now)
+    date_updated = models.DateTimeField(default=timezone.now, null=True)
 
     def __str__(self):
         return f"{self.name} room"
+
+    def get_absolute_url(self):
+        return reverse("rooms", kwargs={pk: self.pk})
+
+
+    def save(self, raw=False, force_insert=False,
+            force_update=False, using=None, update_fields=None):
+        super().save()
+
+
+        img = Image.open(self.image.path)
+
+        if img.height > 300 or image.width > 233.5:
+            output_size = (750, 423)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
 
 
 class Comment(models.Model):
@@ -78,3 +100,4 @@ class Gallery(models.Model):
         return self.title
     
 # rating star yaratish 5 xilini va iconlarini css dan topish yoki svg xullas
+
