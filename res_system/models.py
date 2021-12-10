@@ -3,6 +3,10 @@ from ckeditor.fields import RichTextField
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
+from django.utils.text import slugify
+
+from PIL import Image
+from django_resized import ResizedImageField
 
 
 
@@ -59,25 +63,28 @@ class Room(models.Model):
     capacity_persons = models.PositiveIntegerField(default=2)
     date_created = models.DateTimeField(default=timezone.now)
     date_updated = models.DateTimeField(default=timezone.now, null=True)
+    slug = models.SlugField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.name} room"
 
     def get_absolute_url(self):
-        return reverse("rooms", kwargs={pk: self.pk})
+        return reverse('res_system:room_detail', args=[str(self.slug)])
 
 
-    def save(self, raw=False, force_insert=False,
-            force_update=False, using=None, update_fields=None):
-        super().save()
+    def save(self, *args, **kwargs):
+        if self.slug is None:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 
         img = Image.open(self.image.path)
 
-        if img.height > 300 or image.width > 233.5:
+        if img.height > 300 or img.width > 233.5:
             output_size = (750, 423)
             img.thumbnail(output_size)
             img.save(self.image.path)
+        
 
 
 class Comment(models.Model):
@@ -89,7 +96,7 @@ class Comment(models.Model):
 
 
     def __str__(self):
-        return f"{ self.author.username }' comment"
+        return f"{ self.author.username } {self.content}"
 
 
 class Gallery(models.Model):

@@ -26,7 +26,16 @@ SECRET_KEY = 'django-insecure-s1x5uyz(0)dvj#1j6pj0a&167%fpkej^e0t#*mh7j)in#@zy2j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'fazliddinabduhakimov9@gmail.com'
+EMAIL_HOST_PASSWORD = 'fazliddin2002'
+
+
 
 
 # Application definition
@@ -42,7 +51,7 @@ INSTALLED_APPS = [
     # 
     'res_system',
     'users',
-    'sona_blog',
+    'blog',
 
     # instruments
     'ckeditor',
@@ -213,3 +222,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+DJANGORESIZED_DEFAULT_SIZE = [1920, 1080]
+DJANGORESIZED_DEFAULT_QUALITY = 75
+DJANGORESIZED_DEFAULT_KEEP_META = True
+DJANGORESIZED_DEFAULT_FORCE_FORMAT = 'JPEG'
+DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'JPEG': ".jpg"}
+DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'

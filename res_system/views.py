@@ -38,10 +38,12 @@ def room_list(request):
     return render(request, 'res_system/room_list.html', context)
 
 
-def room_detail(request, pk):
-    room = get_object_or_404(Room, pk=pk)
+def room_detail(request, slug):
+    room = get_object_or_404(Room, slug=slug)
 
     context = {
         'room': room
     }
     return render(request, 'res_system/room_detail.html', context)
+
+
