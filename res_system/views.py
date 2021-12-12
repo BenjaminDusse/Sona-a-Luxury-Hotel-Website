@@ -1,17 +1,24 @@
 from django.shortcuts import render, get_object_or_404, redirect
 
-from .forms import SearchForm
+from .forms import SearchForm, SubscribersForm
 from .models import Service, Category, Rating_Star, Room, Comment, Gallery
 from blog.models import Post
 
+ 
+def newsletter(request):
+    context = {}
+    return render(request, 'res_system/mail.html')
+
 
 def search(request):
+    search_form = SearchForm()
     if request.method == 'POST':
-        form.save()
-        return redirect('res_system:')
+        if search_form.is_valid():
+            search_form.save()
+            return redirect('/')
 
     context = {
-        'form': form
+        'search_form': search_form
     }
 
     return render(request, 'res_system/search.html', context)
@@ -25,13 +32,16 @@ def home(request):
     comments = Comment.objects.all()
     services = Service.objects.all()
     posts = Post.objects.all().order_by('date_posted')
+    newsletter_form = SubscribersForm()
 
     context = {
         'categories': categories,
         'rating_stars': rating_stars,
         'rooms': rooms[:4],
         'posts': posts[:5],
-        'comments': comments
+        'comments': comments,
+        'newsletter_form': newsletter_form,
+        
     }
     return render(request, 'res_system/home.html', context)
 

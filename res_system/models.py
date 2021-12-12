@@ -61,9 +61,13 @@ class Room(models.Model):
     rating_stars = models.ForeignKey(Rating_Star, on_delete=models.SET_NULL, null=True, blank=True)
     size = models.PositiveIntegerField(default=15)
     capacity_persons = models.PositiveIntegerField(default=2)
+    check_in = models.DateTimeField(default=timezone.now)
+    check_out = models.DateTimeField(default=timezone.now, null=True)
     date_created = models.DateTimeField(default=timezone.now)
     date_updated = models.DateTimeField(default=timezone.now, null=True)
     slug = models.SlugField(blank=True, null=True)
+    is_available = models.BooleanField(default=True)
+    
 
     def __str__(self):
         return f"{self.name} room"
@@ -105,6 +109,26 @@ class Gallery(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Subscribers(models.Model):
+    email = models.EmailField()
+    date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self) -> str:
+        return self.email
+
+
+class MailMessage(models.Model):
+    title = models.CharField(max_length=200, null=True)
+    message = models.TextField()
     
-# rating star yaratish 5 xilini va iconlarini css dan topish yoki svg xullas
+    def __str__(self) -> str:
+        return self.title
+
+
+
+
+
+
 
