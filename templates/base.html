@@ -60,13 +60,12 @@
         </div>
         <nav class="mainmenu mobile-menu">
             <ul>
-                <li class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}"><a
-                        href="{% url 'res_system:home' %}">Home</a></li>
+                <li class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}"><a href="{% url 'res_system:home' %}">Home</a></li>
                 <li><a href="{% url 'res_system:room_list' %}">Rooms</a></li>
                 <li><a href="{% url 'res_system:about' %}">About Us</a></li>
+                <li><a href="{% url 'blog:blog_list' %}">News</a></li>
                 <li><a href="{% url 'res_system:contact' %}">Contact</a></li>
             </ul>
-            <li><a href="{% url 'blog:blog_list' %}">News</a></li>
         </nav>
         <div id="mobile-menu-wrap"></div>
         <div class="top-social">
@@ -122,6 +121,13 @@
                 <div class="row">
                     <div class="col-lg-2">
                         <div class="logo">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-success">
+                                        {{ message }}
+                                    </div>  
+                                {% endfor %}
+                            {% endif %}
                             <a href="{% url 'res_system:home' %}">
                                 <img src="{% static 'img/logo.png' %}" alt="">
                             </a>
@@ -140,10 +146,10 @@
                             </nav>
                             <div class="nav-right search-switch">
                                 <i class="icon_search"></i>
-                                <!-- <form action="{% url 'res_system:search' %}" method="POST">
+                                <form action="{% url 'res_system:search' %}" method="POST">
                                     {% csrf_token %}
                                     {{ form }}
-                                </form> -->
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -154,9 +160,9 @@
     <!-- Header End -->
 
     {% block content %}
-
+        
     {% endblock %}
-
+    
     <!-- Footer Section Begin -->
     <footer class="footer-section">
         <div class="container">
@@ -210,14 +216,12 @@
     <div class="search-model">
         <div class="h-100 d-flex align-items-center justify-content-center">
             <div class="search-close-switch"><i class="icon_close"></i></div>
-            <form class="search-model-form" method="post">
-                {% csrf_token %}
-                {{ search_form.content }}
+            <form class="search-model-form">
                 <input type="text" id="search-input" placeholder="Search here.....">
             </form>
         </div>
     </div>
-    <!-- Search model end -->
+    <!-- Search model end -->   
 
     <!-- Js Plugins -->
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>

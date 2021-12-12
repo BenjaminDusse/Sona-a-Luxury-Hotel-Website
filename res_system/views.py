@@ -1,12 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
-
+from django.contrib import messages
 from .forms import SearchForm, SubscribersForm
 from .models import Service, Category, Rating_Star, Room, Comment, Gallery
 from blog.models import Post
 
- 
+
 def newsletter(request):
-    context = {}
+    newsletter_form = SubscribersForm()
+    
+    context = {
+        'newsletter_form': newsletter_form
+    }
     return render(request, 'res_system/mail.html')
 
 
@@ -16,7 +20,7 @@ def search(request):
         if search_form.is_valid():
             search_form.save()
             return redirect('/')
-
+        
     context = {
         'search_form': search_form
     }
@@ -33,6 +37,16 @@ def home(request):
     services = Service.objects.all()
     posts = Post.objects.all().order_by('date_posted')
     newsletter_form = SubscribersForm()
+
+        
+    if request.method == 'POST':
+        newsletter_form = SubscribersForm(request.POST)
+        if newsletter_form.is_valid():
+            newsletter_form.save()
+            messages.success(request, 'Subscription accepted!')
+            return redirect('/')
+        else:
+            newsletter_form = SubscribersForm()
 
     context = {
         'categories': categories,
