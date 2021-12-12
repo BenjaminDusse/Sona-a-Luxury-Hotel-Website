@@ -10,7 +10,7 @@
                 <div class="breadcrumb-text">
                         <h2>Our Rooms</h2>
                         <div class="bt-option">
-                            <a href="./home.html">Home</a>
+                            <a href="{% url 'res_system:home' %}">Home</a>
                             <span>Rooms</span>
                         </div>
                     </div>
@@ -47,7 +47,9 @@
                                     </tr>
                                     <tr>
                                         <td class="r-o">Services:</td>
-                                        <td>Wifi, Television, Bathroom,...</td>
+                                        {% for service in services %}
+                                            <td>{{ service }},</td> 
+                                        {% endfor %}
                                     </tr>
                                 </tbody>
                             </table>

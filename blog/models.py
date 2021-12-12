@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from ckeditor.fields import RichTextField
 from django.utils import timezone
 from django.utils.text import slugify
-
+from django.urls import reverse
 
 class Tag(models.Model):
     name = models.CharField(max_length=255)
@@ -42,6 +42,8 @@ class Post(models.Model):
     tagline_images = models.ImageField(upload_to="blog/post_images/tagline_images", blank=True, null=True)
     tags = models.ManyToManyField(Tag, related_name='posts')
     date_posted = models.DateTimeField(default=timezone.now)
+    likes = models.ManyToManyField(User, related_name='post_likes', blank=True)
+    dislikes =models.ManyToManyField(User, related_name='post_dislikes', blank=True)
 
     def __str__(self):
         return self.title
@@ -50,6 +52,17 @@ class Post(models.Model):
         if self.slug is None:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)       
+
+
+    def total_likes(self):
+        return self.likes.count()
+
+    def total_dislikes(self):
+        return self.dislikes.count()
+
+    def get_absolute_url(self):
+        return reverse('blog:blog_detail', args=[str(self.slug), str(self.pk)])
+
 
 class Rating_Star(models.Model):
     star = models.PositiveIntegerField()
@@ -71,4 +84,3 @@ class Comment(models.Model):
 # create shared links for detail page blog add any logic
 # add likes and dislikes into rooms and blog detail comments
 # for siklida har xil stilda chiqadigan qilib sikl yaratish
-
