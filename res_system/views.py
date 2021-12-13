@@ -1,17 +1,37 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from .forms import SearchForm, SubscribersForm
+from django.core.mail import send_mail
+
+
+from .forms import SearchForm, SubscribersForm, MailMessageForm
 from .models import Service, Category, Rating_Star, Room, Comment, Gallery
 from blog.models import Post
 
 
-def newsletter(request):
-    newsletter_form = SubscribersForm()
+def mail_letter(request):
     
+    mail_message = MailMessageForm()    
+    
+    if request.method == 'POST':
+        mail_message = MailMessageForm(request.POST)
+        if mail_message.is_valid():
+            mail_message.save()
+            name = mail_message.cleaned_data.get('name')
+            email = mail_message.cleaned_data.get('email')
+            message = mail_message.cleaned_data.get('message')
+            send_mail(
+                name,
+                message,
+                email,
+                ['fazliddinabduhakimov9@gmail.com'],
+                fail_silently=False
+            )
+            messages.success(request, 'Message has been sent to the site owners!')
+            
     context = {
-        'newsletter_form': newsletter_form
+        'mail_message': mail_message
     }
-    return render(request, 'res_system/mail.html')
+    return render(request, 'res_system/mail_letter.html', context)
 
 
 def search(request):
@@ -38,7 +58,7 @@ def home(request):
     posts = Post.objects.all().order_by('date_posted')
     newsletter_form = SubscribersForm()
 
-        
+
     if request.method == 'POST':
         newsletter_form = SubscribersForm(request.POST)
         if newsletter_form.is_valid():
@@ -94,7 +114,21 @@ def about(request):
     return render(request, 'res_system/about.html', context)
 
 def contact(request):
-    context = {}
+    
+    mail_form = MailMessageForm()
+    
+    if request.method == 'POST':
+        mail_form = MailMessageForm(request.POST)
+        if mail_form.is_valid():
+            mail_form.save()
+            messages.success(request, "We take your message. We'l connect with you in a short time")
+            return redirect('res_system:contact')
+        else:
+            mail_form = MailMessageForm()
+            
+    context = {
+        'mail_form': mail_form
+    }
     return render(request, 'res_system/contact.html', context)
 
 

@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.urls import reverse
 from django.utils.text import slugify
 
+
 from PIL import Image
 from django_resized import ResizedImageField
 
@@ -120,11 +121,12 @@ class Subscribers(models.Model):
 
 
 class MailMessage(models.Model):
-    title = models.CharField(max_length=200, null=True)
+    name = models.CharField(max_length=200, null=True)
+    email = models.EmailField()
     message = models.TextField()
     
     def __str__(self) -> str:
-        return self.title
+        return f"{self.name} - {self.message}"
 
 
 
