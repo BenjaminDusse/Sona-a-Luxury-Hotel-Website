@@ -22,8 +22,8 @@ def mail_letter(request):
             send_mail(
                 name,
                 message,
-                email,
-                ['fazliddinabduhakimov9@gmail.com'],
+                '',
+                ['fazliddinabduhakimov9@gmail.com', 'abduhakimovfazliddin2002@gmail.com'],
                 fail_silently=False
             )
             messages.success(request, 'Message has been sent to the site owners!')
