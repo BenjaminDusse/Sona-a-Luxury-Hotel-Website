@@ -3,15 +3,15 @@ from django.contrib import messages
 from django.core.mail import send_mail
 
 
-from .forms import SearchForm, SubscribersForm, MailMessageForm
+from .forms import SubscribersForm, MailMessageForm
 from .models import Service, Category, Rating_Star, Room, Comment, Gallery
 from blog.models import Post
 
 
-def mail_letter(request):
-    
-    mail_message = MailMessageForm()    
-    
+def mail_letter(request):``
+
+    mail_message = MailMessageForm()
+
     if request.method == 'POST':
         mail_message = MailMessageForm(request.POST)
         if mail_message.is_valid():
@@ -23,11 +23,13 @@ def mail_letter(request):
                 name,
                 message,
                 '',
-                ['fazliddinabduhakimov9@gmail.com', 'abduhakimovfazliddin2002@gmail.com'],
+                ['fazliddinabduhakimov9@gmail.com',
+                    'abduhakimovfazliddin2002@gmail.com'],
                 fail_silently=False
             )
-            messages.success(request, 'Message has been sent to the site owners!')
-            
+            messages.success(
+                request, 'Message has been sent to the site owners!')
+
     context = {
         'mail_message': mail_message
     }
@@ -35,18 +37,18 @@ def mail_letter(request):
 
 
 def search(request):
-    search_form = SearchForm()
+
     if request.method == 'POST':
-        if search_form.is_valid():
-            search_form.save()
-            return redirect('/')
-        
+        searched = request.POST['searched']
+        rooms = Room.objects.filter(name__icontains=searched)
+
+
     context = {
-        'search_form': search_form
+        'searched': searched,
+        'rooms': rooms
     }
 
     return render(request, 'res_system/search.html', context)
-
 
 
 def home(request):
@@ -57,7 +59,6 @@ def home(request):
     services = Service.objects.all()
     posts = Post.objects.all().order_by('date_posted')
     newsletter_form = SubscribersForm()
-
 
     if request.method == 'POST':
         newsletter_form = SubscribersForm(request.POST)
@@ -75,11 +76,9 @@ def home(request):
         'posts': posts[:5],
         'comments': comments,
         'newsletter_form': newsletter_form,
-        
+
     }
     return render(request, 'res_system/home.html', context)
-
-
 
 
 def room_list(request):
@@ -88,7 +87,6 @@ def room_list(request):
     rooms = Room.objects.all().order_by('-date_created')
     comments = Comment.objects.all()
     services = Service.objects.all()
-
 
     context = {
         'categories': categories,
@@ -113,23 +111,22 @@ def about(request):
     context = {}
     return render(request, 'res_system/about.html', context)
 
+
 def contact(request):
-    
+
     mail_form = MailMessageForm()
-    
+
     if request.method == 'POST':
         mail_form = MailMessageForm(request.POST)
         if mail_form.is_valid():
             mail_form.save()
-            messages.success(request, "We take your message. We'l connect with you in a short time")
+            messages.success(
+                request, "We take your message. We'l connect with you in a short time")
             return redirect('res_system:contact')
         else:
             mail_form = MailMessageForm()
-            
+
     context = {
         'mail_form': mail_form
     }
     return render(request, 'res_system/contact.html', context)
-
-
-

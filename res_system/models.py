@@ -7,7 +7,6 @@ from django.utils.text import slugify
 
 
 from PIL import Image
-from django_resized import ResizedImageField
 
 
 
