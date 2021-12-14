@@ -8,7 +8,7 @@ from .models import Service, Category, Rating_Star, Room, Comment, Gallery
 from blog.models import Post
 
 
-def mail_letter(request):``
+def mail_letter(request):
 
     mail_message = MailMessageForm()
 
